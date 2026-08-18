@@ -1,0 +1,10 @@
+{
+  "description": "Streamline operational error resolution for telecom service orders with an intuitive interface designed for internal technical support staff.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}
