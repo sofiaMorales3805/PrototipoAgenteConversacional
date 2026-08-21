@@ -40,10 +40,15 @@ function IcUsers({ a }: { a: boolean }) {
 }
 
 // ─── Sidebar ─────────────────────────────────────────────────────────────────
-function Sidebar({ active, onChange, onLogout }: { active: NavId; onChange: (id: NavId) => void; onLogout: () => void }) {
+function Sidebar({ active, onChange, onLogout, onClose }: { active: NavId; onChange: (id: NavId) => void; onLogout: () => void; onClose?: () => void }) {
   return (
     <aside className="flex flex-col w-56 flex-shrink-0 h-full" style={{ background: 'linear-gradient(180deg,#0c1b3a 0%,#0f2044 100%)' }}>
       <div className="flex items-center gap-3 px-5 py-5 border-b" style={{ borderColor: 'rgba(255,255,255,0.07)' }}>
+        {onClose && (
+          <button type="button" onClick={onClose} className="md:hidden mr-1 p-1 rounded-lg hover:bg-white/10 transition-colors">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3 3l12 12M15 3L3 15" stroke="#94a3b8" strokeWidth="1.5" strokeLinecap="round"/></svg>
+          </button>
+        )}
         <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(37,99,235,0.25)', border: '1px solid rgba(37,99,235,0.4)' }}>
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
             <circle cx="10" cy="10" r="3" fill="#60a5fa"/>
@@ -69,7 +74,7 @@ function Sidebar({ active, onChange, onLogout }: { active: NavId; onChange: (id:
         {NAV_ITEMS.map(({ id, label, icon }) => {
           const isActive = active === id
           return (
-            <button key={id} onClick={() => onChange(id)} type="button"
+            <button key={id} onClick={() => { onChange(id); onClose?.() }} type="button"
               className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left transition-all duration-150"
               style={{ background: isActive ? 'rgba(37,99,235,0.18)' : 'transparent', borderLeft: isActive ? '2.5px solid #3b82f6' : '2.5px solid transparent' }}>
               {icon(isActive)}
@@ -81,13 +86,13 @@ function Sidebar({ active, onChange, onLogout }: { active: NavId; onChange: (id:
 
       <div className="px-4 py-4 border-t" style={{ borderColor: 'rgba(255,255,255,0.07)' }}>
         <div className="flex items-center gap-2.5 mb-2">
-          <div className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white flex-shrink-0" style={{ background: 'linear-gradient(135deg,#2563eb,#be185d)' }}>EA</div>
+          <div className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white flex-shrink-0" style={{ background: 'linear-gradient(135deg,#2563eb,#be185d)' }}>JM</div>
           <div className="flex-1 min-w-0">
-            <p className="text-xs font-semibold text-white truncate">Eduardo Alvear</p>
-            <p className="text-xs truncate" style={{ color: '#64748b' }}>ID: Soporte_402</p>
+            <p className="text-xs font-semibold text-white truncate">Jenny Morales</p>
+            <p className="text-xs truncate" style={{ color: '#64748b' }}>ID: Admin_JM01</p>
           </div>
         </div>
-        <p className="text-xs font-semibold tracking-widest uppercase mb-3" style={{ color: '#3b82f6', letterSpacing: '0.1em' }}>Soporte Técnico L2</p>
+        <p className="text-xs font-semibold tracking-widest uppercase mb-3" style={{ color: '#3b82f6', letterSpacing: '0.1em' }}>Administrador</p>
         <button onClick={onLogout} type="button"
           className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-xs transition-colors hover:bg-white/5" style={{ color: '#64748b' }}>
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5 2H2.5A1.5 1.5 0 001 3.5v7A1.5 1.5 0 002.5 12H5" stroke="#64748b" strokeWidth="1.3" strokeLinecap="round"/><path d="M9 4.5L12 7l-3 2.5M12 7H5.5" stroke="#64748b" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/></svg>
@@ -99,15 +104,20 @@ function Sidebar({ active, onChange, onLogout }: { active: NavId; onChange: (id:
 }
 
 // ─── Top bar ──────────────────────────────────────────────────────────────────
-function TopBar({ title, subtitle }: { title: string; subtitle?: string }) {
+function TopBar({ title, subtitle, onMenuClick }: { title: string; subtitle?: string; onMenuClick?: () => void }) {
   return (
-    <header className="flex items-center justify-between px-7 py-4 flex-shrink-0 bg-white" style={{ borderBottom: '1px solid #e2e8f4', boxShadow: '0 1px 4px rgba(15,32,68,0.04)' }}>
-      <div>
-        <h1 className="text-xl font-bold tracking-tight" style={{ color: '#0f2044' }}>{title}</h1>
-        {subtitle && <p className="text-xs mt-0.5" style={{ color: '#94a3b8' }}>{subtitle}</p>}
+    <header className="flex items-center justify-between px-4 md:px-7 py-3 md:py-4 flex-shrink-0 bg-white" style={{ borderBottom: '1px solid #e2e8f4', boxShadow: '0 1px 4px rgba(15,32,68,0.04)' }}>
+      <div className="flex items-center gap-3 min-w-0">
+        <button type="button" onClick={onMenuClick} className="md:hidden p-2 rounded-lg hover:bg-slate-50 transition-colors flex-shrink-0">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M2 4h14M2 9h14M2 14h14" stroke="#0f2044" strokeWidth="1.5" strokeLinecap="round"/></svg>
+        </button>
+        <div className="min-w-0">
+          <h1 className="text-base md:text-xl font-bold tracking-tight truncate" style={{ color: '#0f2044' }}>{title}</h1>
+          {subtitle && <p className="text-xs mt-0.5 hidden md:block" style={{ color: '#94a3b8' }}>{subtitle}</p>}
+        </div>
       </div>
-      <div className="flex items-center gap-5">
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-full" style={{ background: '#ecfdf5', border: '1px solid #a7f3d0' }}>
+      <div className="flex items-center gap-2 md:gap-5">
+        <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full" style={{ background: '#ecfdf5', border: '1px solid #a7f3d0' }}>
           <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"/>
           <span className="text-xs font-semibold" style={{ color: '#065f46' }}>Conectado</span>
         </div>
@@ -115,11 +125,11 @@ function TopBar({ title, subtitle }: { title: string; subtitle?: string }) {
           <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 2a5 5 0 015 5v3l1.5 2.5H2.5L4 10V7a5 5 0 015-5z" stroke="#64748b" strokeWidth="1.3"/><path d="M7 15a2 2 0 004 0" stroke="#64748b" strokeWidth="1.3"/></svg>
           <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-pink-600"/>
         </button>
-        <div className="flex items-center gap-2.5 cursor-pointer">
-          <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white flex-shrink-0" style={{ background: 'linear-gradient(135deg,#2563eb,#be185d)' }}>EA</div>
-          <div>
-            <p className="text-sm font-semibold leading-tight" style={{ color: '#0f2044' }}>Eduardo Alvear</p>
-            <p className="text-xs leading-tight" style={{ color: '#94a3b8' }}>ID: Soporte_402</p>
+        <div className="flex items-center gap-2 cursor-pointer">
+          <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white flex-shrink-0" style={{ background: 'linear-gradient(135deg,#2563eb,#be185d)' }}>JM</div>
+          <div className="hidden md:block">
+            <p className="text-sm font-semibold leading-tight" style={{ color: '#0f2044' }}>Jenny Morales</p>
+            <p className="text-xs leading-tight" style={{ color: '#94a3b8' }}>ID: Admin_JM01</p>
           </div>
         </div>
       </div>
@@ -162,8 +172,8 @@ function NetworkBg() {
 
 // ─── Login ────────────────────────────────────────────────────────────────────
 function LoginScreen({ onLogin }: { onLogin: () => void }) {
-  const [user, setUser] = useState('')
-  const [pass, setPass] = useState('')
+  const [user, setUser] = useState('jennyMorales@miumg.edu.gt')
+  const [pass, setPass] = useState('Telco2026*')
   const [loading, setLoading] = useState(false)
   const [uF, setUF] = useState(false)
   const [pF, setPF] = useState(false)
@@ -192,7 +202,7 @@ function LoginScreen({ onLogin }: { onLogin: () => void }) {
         <div className="w-full max-w-md">
           <div className="bg-white rounded-2xl overflow-hidden" style={{ boxShadow:'0 4px 6px -1px rgba(15,32,68,0.06),0 20px 48px -8px rgba(15,32,68,0.14)' }}>
             <div className="h-1 w-full" style={{ background:'linear-gradient(90deg,#0f2044 0%,#2563eb 55%,#be185d 100%)' }}/>
-            <div className="px-10 pt-9 pb-10">
+            <div className="px-6 sm:px-10 pt-8 sm:pt-9 pb-8 sm:pb-10">
               <div className="flex flex-col items-center text-center mb-8">
                 <svg width="52" height="52" viewBox="0 0 52 52" fill="none">
                   <rect width="52" height="52" rx="14" fill="#EEF4FF"/>
@@ -239,6 +249,14 @@ function LoginScreen({ onLogin }: { onLogin: () => void }) {
                 <div className="flex items-start gap-2.5 rounded-lg px-3.5 py-3" style={{ background:'#f0f4ff', border:'1px solid #dde5f7' }}>
                   <svg width="14" height="14" viewBox="0 0 14 14" fill="none" className="mt-0.5 shrink-0"><circle cx="7" cy="7" r="6" stroke="#2563eb" strokeWidth="1.2"/><rect x="6.3" y="6" width="1.4" height="4.5" rx=".7" fill="#2563eb"/><rect x="6.3" y="3.5" width="1.4" height="1.4" rx=".7" fill="#2563eb"/></svg>
                   <p className="text-xs leading-relaxed" style={{ color:'#3b5bdb' }}>Esta sesión se registrará con fines de auditoría y trazabilidad de acceso.</p>
+                </div>
+                {/* Demo credentials hint */}
+                <div className="rounded-lg px-3.5 py-2.5" style={{ background:'#fafbfd', border:'1px dashed #dde5f0' }}>
+                  <p className="text-xs font-semibold mb-1" style={{ color:'#94a3b8' }}>Credenciales de acceso</p>
+                  <div className="space-y-0.5">
+                    <p className="text-xs font-mono" style={{ color:'#475569' }}>Usuario: <span className="font-semibold" style={{ color:'#2563eb' }}>jennyMorales@miumg.edu.gt</span></p>
+                    <p className="text-xs font-mono" style={{ color:'#475569' }}>Contraseña: <span className="font-semibold" style={{ color:'#2563eb' }}>Telco2026*</span></p>
+                  </div>
                 </div>
                 <button type="submit" disabled={loading} className="w-full rounded-lg py-3 text-sm font-semibold text-white transition-all duration-200"
                   style={{ background:loading?'#4b6cb7':'linear-gradient(135deg,#0f2044 0%,#1d4ed8 60%,#2563eb 100%)', boxShadow:loading?'none':'0 4px 14px rgba(37,99,235,0.35)', cursor:loading?'not-allowed':'pointer' }}>
@@ -337,7 +355,7 @@ function DashboardView() {
         </div>
       </div>
 
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {KPI_DATA.map((k,i) => (
           <div key={i} className="bg-white rounded-xl p-5 flex flex-col gap-3 hover:shadow-md transition-shadow" style={{ border:'1px solid #e8eef6', boxShadow:'0 1px 3px rgba(15,32,68,0.05)' }}>
             <div className="flex items-center justify-between">
@@ -604,6 +622,568 @@ function AgentView() {
           </div>
         </div>
       </aside>
+    </div>
+  )
+}
+
+// ─── Métricas y Reportes ─────────────────────────────────────────────────────
+const MONTHS_DATA = [
+  { mes:'Ene', val:312 }, { mes:'Feb', val:278 }, { mes:'Mar', val:415 },
+  { mes:'Abr', val:389 }, { mes:'May', val:452 }, { mes:'Jun', val:398 },
+  { mes:'Jul', val:501 }, { mes:'Ago', val:467 }, { mes:'Sep', val:423 },
+  { mes:'Oct', val:544 }, { mes:'Nov', val:489 }, { mes:'Dic', val:431 },
+]
+
+const DONUT_DATA = [
+  { label:'ERR-CONTR', val:34, color:'#2563eb' },
+  { label:'ERR-PROV',  val:22, color:'#7c3aed' },
+  { label:'ERR-ACT',   val:18, color:'#be185d' },
+  { label:'ERR-FACT',  val:13, color:'#0891b2' },
+  { label:'ERR-PORT',  val:8,  color:'#059669' },
+  { label:'Otros',     val:5,  color:'#94a3b8' },
+]
+
+const TOP10_DATA = [
+  { codigo:'ERR-CONTR-001', desc:'Orden detenida por inconsistencia de datos del titular',    freq:247, ultima:'Hoy, 14:32',      trend:+12 },
+  { codigo:'ERR-PROV-003',  desc:'Falla en aprovisionamiento CRM tras cambio de plan',        freq:198, ultima:'Hoy, 11:47',      trend:+5  },
+  { codigo:'ERR-ACT-012',   desc:'Timeout en activación de línea móvil post-portabilidad',    freq:164, ultima:'Hoy, 10:03',      trend:-3  },
+  { codigo:'ERR-CONTR-002', desc:'Rechazo de flujo por cédula no validada en sistema nacional',freq:141, ultima:'Ayer, 16:58',   trend:+8  },
+  { codigo:'ERR-FACT-007',  desc:'Dirección de facturación no coincide con registro CRM',     freq:119, ultima:'Ayer, 15:22',    trend:-7  },
+  { codigo:'ERR-CONTR-003', desc:'Reenvío automático de token de activación fallido',          freq:103, ultima:'Ayer, 13:09',   trend:+2  },
+  { codigo:'ERR-PORT-007',  desc:'Falla en activación de línea tras portabilidad de operador', freq:89,  ultima:'17 ago, 17:11', trend:-4  },
+  { codigo:'ERR-PROV-011',  desc:'Duplicado de contrato detectado en alta de producto adicional',freq:74, ultima:'17 ago, 14:45',trend:+1  },
+  { codigo:'ERR-ACT-008',   desc:'Suspensión de línea no ejecutada por error de autorización', freq:61,  ultima:'16 ago, 15:45', trend:-9  },
+  { codigo:'ERR-FACT-002',  desc:'Orden de reactivación rechazada por deuda no detectada',     freq:48,  ultima:'16 ago, 13:27', trend:+3  },
+]
+
+const TIME_RANGES = ['Últimos 7 días','Últimos 30 días','Últimos 3 meses','Últimos 6 meses','Este año']
+
+function BarChart() {
+  const maxVal = Math.max(...MONTHS_DATA.map(d => d.val))
+  const chartH = 160
+  const barW = 26
+  const gap = 18
+  const totalW = MONTHS_DATA.length * (barW + gap) - gap
+
+  return (
+    <div className="overflow-x-auto">
+      <svg width={totalW + 32} height={chartH + 40} className="block mx-auto">
+        {/* Y-axis grid lines */}
+        {[0,0.25,0.5,0.75,1].map((t,i) => (
+          <g key={i}>
+            <line x1="0" y1={chartH - t*chartH} x2={totalW+32} y2={chartH - t*chartH}
+              stroke="#f1f5fb" strokeWidth="1"/>
+            <text x="0" y={chartH - t*chartH - 4} fontSize="9" fill="#94a3b8" textAnchor="start">
+              {Math.round(t*maxVal)}
+            </text>
+          </g>
+        ))}
+
+        {MONTHS_DATA.map((d,i) => {
+          const x = i * (barW + gap) + 16
+          const h = (d.val / maxVal) * chartH
+          const isHighest = d.val === maxVal
+          return (
+            <g key={d.mes}>
+              {/* Bar */}
+              <rect x={x} y={chartH - h} width={barW} height={h} rx="5"
+                fill={isHighest ? 'url(#barAccent)' : 'url(#barDefault)'}/>
+              {/* Value label on hover-equivalent: show on max */}
+              {isHighest && (
+                <text x={x + barW/2} y={chartH - h - 6} fontSize="9" fill="#2563eb" textAnchor="middle" fontWeight="700">
+                  {d.val}
+                </text>
+              )}
+              {/* Month label */}
+              <text x={x + barW/2} y={chartH + 16} fontSize="10" fill="#94a3b8" textAnchor="middle">{d.mes}</text>
+            </g>
+          )
+        })}
+
+        <defs>
+          <linearGradient id="barDefault" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#93c5fd"/>
+            <stop offset="100%" stopColor="#bfdbfe"/>
+          </linearGradient>
+          <linearGradient id="barAccent" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#1d4ed8"/>
+            <stop offset="100%" stopColor="#3b82f6"/>
+          </linearGradient>
+        </defs>
+      </svg>
+    </div>
+  )
+}
+
+function DonutChart() {
+  const total = DONUT_DATA.reduce((s,d) => s + d.val, 0)
+  const cx = 90, cy = 90, R = 72, r = 44
+  let cumAngle = -Math.PI / 2
+
+  const slices = DONUT_DATA.map(d => {
+    const angle = (d.val / total) * 2 * Math.PI
+    const startA = cumAngle
+    const endA = cumAngle + angle
+    cumAngle = endA
+    const x1 = cx + R * Math.cos(startA), y1 = cy + R * Math.sin(startA)
+    const x2 = cx + R * Math.cos(endA),   y2 = cy + R * Math.sin(endA)
+    const ix1 = cx + r * Math.cos(endA),   iy1 = cy + r * Math.sin(endA)
+    const ix2 = cx + r * Math.cos(startA), iy2 = cy + r * Math.sin(startA)
+    const large = angle > Math.PI ? 1 : 0
+    return { ...d, path: `M ${x1} ${y1} A ${R} ${R} 0 ${large} 1 ${x2} ${y2} L ${ix1} ${iy1} A ${r} ${r} 0 ${large} 0 ${ix2} ${iy2} Z` }
+  })
+
+  return (
+    <div className="flex items-center gap-6">
+      <svg width="180" height="180">
+        {slices.map((s,i) => (
+          <path key={i} d={s.path} fill={s.color} stroke="white" strokeWidth="2"/>
+        ))}
+        <text x={cx} y={cy - 8} textAnchor="middle" fontSize="22" fontWeight="700" fill="#0f2044">
+          {total}%
+        </text>
+        <text x={cx} y={cy + 10} textAnchor="middle" fontSize="9" fill="#94a3b8">distribución</text>
+      </svg>
+      <div className="flex flex-col gap-2.5">
+        {DONUT_DATA.map(d => (
+          <div key={d.label} className="flex items-center gap-2.5">
+            <span className="w-2.5 h-2.5 rounded-sm flex-shrink-0" style={{ background:d.color }}/>
+            <span className="text-xs font-medium" style={{ color:'#334155' }}>{d.label}</span>
+            <span className="text-xs font-bold ml-auto pl-4" style={{ color:'#0f2044' }}>{d.val}%</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function MetricasView() {
+  const [range, setRange] = useState('Últimos 30 días')
+  const [hoverRow, setHoverRow] = useState<number|null>(null)
+
+  const kpis = [
+    { label:'Total de consultas', value:'4,098', delta:'+8.4% vs período anterior', up:true,  color:'#2563eb',
+      icon:<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M3 5h14M3 10h14M3 15h9" stroke="#2563eb" strokeWidth="1.6" strokeLinecap="round"/></svg> },
+    { label:'Respuestas útiles', value:'89.3%', delta:'+1.2% satisfacción', up:true,  color:'#7c3aed',
+      icon:<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M3 14V8a2 2 0 012-2h10a2 2 0 012 2v6l-3-2H5a2 2 0 01-2-2z" stroke="#7c3aed" strokeWidth="1.5"/><path d="M7 10h6M7 13h4" stroke="#7c3aed" strokeWidth="1.4" strokeLinecap="round"/></svg> },
+    { label:'Casos resueltos', value:'3,241', delta:'79.1% tasa de resolución', up:true,  color:'#059669',
+      icon:<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" stroke="#059669" strokeWidth="1.5"/><path d="M6.5 10.5l2.5 2.5 5-5" stroke="#059669" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/></svg> },
+    { label:'Escalaciones', value:'412', delta:'−4.1% vs mes anterior', up:false, color:'#be185d',
+      icon:<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 3l2.5 5h5l-4 3.5 1.5 5.5L10 14l-5 3 1.5-5.5L2.5 8h5L10 3z" stroke="#be185d" strokeWidth="1.4" strokeLinejoin="round"/></svg> },
+  ]
+
+  return (
+    <div className="flex-1 overflow-y-auto px-7 py-6 flex flex-col gap-6">
+
+      {/* Header row */}
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-widest" style={{ color:'#94a3b8', letterSpacing:'0.1em' }}>Resumen operativo del período</p>
+        </div>
+        <div className="flex items-center gap-3">
+          {/* Time range selector */}
+          <div className="flex items-center gap-2 rounded-lg px-3 py-2 bg-white" style={{ border:'1.5px solid #dde5f0' }}>
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1" y="2.5" width="12" height="10" rx="2" stroke="#64748b" strokeWidth="1.2"/><path d="M4.5 1v3M9.5 1v3M1 5.5h12" stroke="#64748b" strokeWidth="1.2" strokeLinecap="round"/></svg>
+            <select value={range} onChange={e=>setRange(e.target.value)} className="bg-transparent text-sm font-medium outline-none pr-1" style={{ color:'#334155' }}>
+              {TIME_RANGES.map(t => <option key={t}>{t}</option>)}
+            </select>
+          </div>
+          <button type="button" className="flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-semibold hover:bg-slate-50 active:scale-95 transition-all"
+            style={{ background:'white', border:'1.5px solid #e2e8f4', color:'#334155' }}>
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1.5v7M4 5.5l3 3 3-3" stroke="#334155" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/><path d="M1.5 10v1.5A1.5 1.5 0 003 13h8a1.5 1.5 0 001.5-1.5V10" stroke="#334155" strokeWidth="1.4" strokeLinecap="round"/></svg>
+            Exportar reporte
+          </button>
+        </div>
+      </div>
+
+      {/* KPI cards */}
+      <div className="grid grid-cols-4 gap-4">
+        {kpis.map((k,i) => (
+          <div key={i} className="bg-white rounded-xl p-5 flex flex-col gap-3 hover:shadow-md transition-shadow"
+            style={{ border:'1px solid #e8eef6', boxShadow:'0 1px 3px rgba(15,32,68,0.05)' }}>
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-medium" style={{ color:'#64748b' }}>{k.label}</span>
+              <div className="w-9 h-9 rounded-lg flex items-center justify-center" style={{ background:`${k.color}12` }}>{k.icon}</div>
+            </div>
+            <span className="text-3xl font-bold tracking-tight" style={{ color:'#0f2044' }}>{k.value}</span>
+            <div className="flex items-center gap-1.5">
+              {k.up
+                ? <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 9V3M3 6l3-3 3 3" stroke="#10b981" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                : <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 3v6M3 6l3 3 3-3" stroke="#be185d" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/></svg>}
+              <span className="text-xs font-medium" style={{ color:k.up?'#059669':'#be185d' }}>{k.delta}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Charts row */}
+      <div className="grid grid-cols-5 gap-5">
+
+        {/* Bar chart — spans 3 cols */}
+        <div className="col-span-3 bg-white rounded-xl overflow-hidden"
+          style={{ border:'1px solid #e8eef6', boxShadow:'0 1px 3px rgba(15,32,68,0.05)' }}>
+          <div className="flex items-center justify-between px-5 py-4" style={{ borderBottom:'1px solid #f1f5fb' }}>
+            <div>
+              <p className="text-sm font-bold" style={{ color:'#0f2044' }}>Consultas por mes</p>
+              <p className="text-xs mt-0.5" style={{ color:'#94a3b8' }}>Volumen mensual de interacciones con el agente IA</p>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="w-3 h-3 rounded-sm" style={{ background:'#3b82f6' }}/>
+              <span className="text-xs" style={{ color:'#64748b' }}>Consultas totales</span>
+              <span className="w-3 h-3 rounded-sm ml-2" style={{ background:'#1d4ed8' }}/>
+              <span className="text-xs" style={{ color:'#64748b' }}>Pico máximo</span>
+            </div>
+          </div>
+          <div className="px-5 py-5">
+            <BarChart/>
+          </div>
+        </div>
+
+        {/* Donut chart — spans 2 cols */}
+        <div className="col-span-2 bg-white rounded-xl overflow-hidden"
+          style={{ border:'1px solid #e8eef6', boxShadow:'0 1px 3px rgba(15,32,68,0.05)' }}>
+          <div className="px-5 py-4" style={{ borderBottom:'1px solid #f1f5fb' }}>
+            <p className="text-sm font-bold" style={{ color:'#0f2044' }}>Errores más frecuentes</p>
+            <p className="text-xs mt-0.5" style={{ color:'#94a3b8' }}>Distribución por categoría de módulo</p>
+          </div>
+          <div className="px-5 py-5">
+            <DonutChart/>
+          </div>
+        </div>
+      </div>
+
+      {/* Top 10 table */}
+      <div className="bg-white rounded-xl overflow-hidden"
+        style={{ border:'1px solid #e8eef6', boxShadow:'0 1px 3px rgba(15,32,68,0.05)' }}>
+        <div className="flex items-center justify-between px-6 py-4" style={{ borderBottom:'1px solid #f1f5fb' }}>
+          <div>
+            <p className="text-sm font-bold" style={{ color:'#0f2044' }}>Top 10 errores más consultados</p>
+            <p className="text-xs mt-0.5" style={{ color:'#94a3b8' }}>Errores con mayor recurrencia en el período seleccionado · {range}</p>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-medium px-2.5 py-1 rounded-full" style={{ background:'#eff6ff', color:'#2563eb' }}>
+              Actualizado: hoy 14:00
+            </span>
+          </div>
+        </div>
+
+        {/* Col headers */}
+        <div className="grid px-6 py-2.5" style={{ gridTemplateColumns:'150px 1fr 110px 160px 90px', borderBottom:'1px solid #f1f5fb', background:'#fafbfd' }}>
+          {['Código','Descripción','Frecuencia','Última consulta','Tendencia'].map(h => (
+            <span key={h} className="text-xs font-semibold uppercase tracking-wider" style={{ color:'#94a3b8', letterSpacing:'0.06em' }}>{h}</span>
+          ))}
+        </div>
+
+        {TOP10_DATA.map((row,i) => {
+          const freqMax = TOP10_DATA[0].freq
+          const barPct = (row.freq / freqMax) * 100
+          return (
+            <div key={row.codigo}
+              className="grid px-6 py-3.5 items-center transition-colors duration-100 cursor-pointer"
+              style={{ gridTemplateColumns:'150px 1fr 110px 160px 90px', borderBottom:i<TOP10_DATA.length-1?'1px solid #f1f5fb':'none', background:hoverRow===i?'#f8faff':'white' }}
+              onMouseEnter={()=>setHoverRow(i)} onMouseLeave={()=>setHoverRow(null)}>
+
+              {/* Código + rank */}
+              <div className="flex items-center gap-2">
+                <span className="w-5 h-5 rounded-md flex items-center justify-center text-xs font-bold flex-shrink-0"
+                  style={{ background: i<3?'#eff6ff':'#f8fafd', color:i<3?'#2563eb':'#94a3b8' }}>{i+1}</span>
+                <span className="text-xs font-mono font-semibold" style={{ color:'#2563eb' }}>{row.codigo}</span>
+              </div>
+
+              {/* Descripción + barra */}
+              <div className="pr-6">
+                <p className="text-sm leading-snug mb-1.5" style={{ color:'#334155' }}>{row.desc}</p>
+                <div className="flex items-center gap-2">
+                  <div className="h-1.5 rounded-full overflow-hidden" style={{ background:'#e8eef6', width:'80%' }}>
+                    <div className="h-full rounded-full" style={{ width:`${barPct}%`, background:'linear-gradient(90deg,#3b82f6,#1d4ed8)' }}/>
+                  </div>
+                </div>
+              </div>
+
+              {/* Frecuencia */}
+              <div className="flex items-center gap-1.5">
+                <span className="text-sm font-bold" style={{ color:'#0f2044' }}>{row.freq}</span>
+                <span className="text-xs" style={{ color:'#94a3b8' }}>consultas</span>
+              </div>
+
+              {/* Última consulta */}
+              <span className="text-sm" style={{ color:'#64748b' }}>{row.ultima}</span>
+
+              {/* Tendencia */}
+              <div className="flex items-center gap-1">
+                {row.trend > 0
+                  ? <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 10V3M3.5 6l3-3 3 3" stroke="#10b981" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                  : <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 3v7M3.5 7l3 3 3-3" stroke="#be185d" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/></svg>}
+                <span className="text-xs font-semibold" style={{ color:row.trend>0?'#059669':'#be185d' }}>
+                  {row.trend>0?'+':''}{row.trend}%
+                </span>
+              </div>
+            </div>
+          )
+        })}
+
+        {/* Footer */}
+        <div className="px-6 py-3.5 flex items-center justify-between" style={{ background:'#fafbfd', borderTop:'1px solid #f1f5fb' }}>
+          <span className="text-xs" style={{ color:'#94a3b8' }}>Datos actualizados cada hora · Fuente: motor de consultas ACT v2.4</span>
+          <div className="flex items-center gap-3">
+            <button type="button" className="text-xs font-medium hover:underline" style={{ color:'#2563eb' }}>Ver reporte completo</button>
+            <span style={{ color:'#e2e8f4' }}>·</span>
+            <button type="button" className="text-xs font-medium hover:underline" style={{ color:'#2563eb' }}>Exportar CSV</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  )
+}
+
+// ─── Historial de Consultas ───────────────────────────────────────────────────
+type HistorialRow = {
+  id: string; fecha: string; hora: string; usuario: string; rol: string;
+  consulta: string; error: string; modulo: string; coincidencia: number; resultado: StatusType
+}
+
+const HISTORIAL_DATA: HistorialRow[] = [
+  { id:'HC-0241', fecha:'18 ago 2026', hora:'14:32', usuario:'Eduardo Alvear',   rol:'Soporte_402',   consulta:'Orden detenida por inconsistencia de datos del titular',         error:'ERR-CONTR-001', modulo:'Aprovisionamiento', coincidencia:94, resultado:'Resuelto'    },
+  { id:'HC-0240', fecha:'18 ago 2026', hora:'13:15', usuario:'Elena Gómez',      rol:'Soporte_311',   consulta:'Falla en activación de línea móvil post-portabilidad',           error:'ERR-PORT-007',  modulo:'Portabilidad',     coincidencia:88, resultado:'Escalado L2' },
+  { id:'HC-0239', fecha:'18 ago 2026', hora:'11:47', usuario:'Pedro Pascal',     rol:'Soporte_198',   consulta:'Rechazo de flujo de aprovisionamiento por cédula no validada',   error:'ERR-CONTR-002', modulo:'Validación ID',    coincidencia:91, resultado:'Escalado L2' },
+  { id:'HC-0238', fecha:'18 ago 2026', hora:'10:03', usuario:'Ana Herrera',      rol:'Soporte_402',   consulta:'Reenvío automático de token de activación fallido',              error:'ERR-CONTR-003', modulo:'Activación',       coincidencia:97, resultado:'Resuelto'    },
+  { id:'HC-0237', fecha:'17 ago 2026', hora:'16:58', usuario:'Roberto Díaz',     rol:'Soporte_215',   consulta:'Error de aprovisionamiento CRM en cambio de plan tarifario',    error:'ERR-CRM-014',   modulo:'CRM',              coincidencia:76, resultado:'En proceso'  },
+  { id:'HC-0236', fecha:'17 ago 2026', hora:'15:22', usuario:'Carmen López',     rol:'Soporte_311',   consulta:'Timeout en módulo de activación de servicio de datos',           error:'ERR-CONTR-007', modulo:'Activación',       coincidencia:83, resultado:'Pendiente'   },
+  { id:'HC-0235', fecha:'17 ago 2026', hora:'14:09', usuario:'Luis Martínez',    rol:'Soporte_402',   consulta:'Duplicado de contrato detectado en alta de producto adicional',  error:'ERR-CONTR-005', modulo:'Contratos',        coincidencia:89, resultado:'Escalado L2' },
+  { id:'HC-0234', fecha:'17 ago 2026', hora:'11:34', usuario:'María Fernández',  rol:'Soporte_198',   consulta:'Inconsistencia en dirección de facturación al migrar 2G a 4G',  error:'ERR-MIG-003',   modulo:'Migración',        coincidencia:92, resultado:'Resuelto'    },
+  { id:'HC-0233', fecha:'16 ago 2026', hora:'17:11', usuario:'Carlos Ramos',     rol:'Soporte_215',   consulta:'Suspensión de línea no ejecutada por error de autorización',     error:'ERR-AUTH-009',  modulo:'Autorización',     coincidencia:71, resultado:'Escalado L2' },
+  { id:'HC-0232', fecha:'16 ago 2026', hora:'15:45', usuario:'Sandra Vargas',    rol:'Soporte_311',   consulta:'Orden de reactivación rechazada por deuda pendiente no detectada',error:'ERR-CONTR-011', modulo:'Facturación',      coincidencia:85, resultado:'Resuelto'    },
+  { id:'HC-0231', fecha:'16 ago 2026', hora:'13:27', usuario:'Diego Torres',     rol:'Soporte_402',   consulta:'Falla en generación de orden en CRM al rescindircontrato',       error:'ERR-CRM-022',   modulo:'CRM',              coincidencia:78, resultado:'En proceso'  },
+  { id:'HC-0230', fecha:'16 ago 2026', hora:'10:52', usuario:'Lucía Morales',    rol:'Soporte_198',   consulta:'Validación de elegibilidad de plan fallida para cliente migrado', error:'ERR-ELIG-004',  modulo:'Validación',       coincidencia:66, resultado:'Pendiente'   },
+]
+
+const RESULTADO_STYLES: Record<StatusType,{bg:string;text:string;dot:string}> = {
+  'Resuelto':    {bg:'#ecfdf5',text:'#065f46',dot:'#10b981'},
+  'Escalado L2': {bg:'#fff7ed',text:'#92400e',dot:'#f59e0b'},
+  'En proceso':  {bg:'#eff6ff',text:'#1e40af',dot:'#3b82f6'},
+  'Pendiente':   {bg:'#fdf2f8',text:'#831843',dot:'#be185d'},
+}
+
+function ResultadoPill({ s }: { s: StatusType }) {
+  const st = RESULTADO_STYLES[s]
+  return (
+    <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full whitespace-nowrap"
+      style={{ background:st.bg, color:st.text }}>
+      <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background:st.dot }}/>
+      {s}
+    </span>
+  )
+}
+
+function CoincidenceBar({ pct }: { pct: number }) {
+  const color = pct >= 90 ? '#059669' : pct >= 75 ? '#2563eb' : '#f59e0b'
+  return (
+    <div className="flex items-center gap-2">
+      <div className="w-16 h-1.5 rounded-full overflow-hidden" style={{ background:'#e8eef6' }}>
+        <div className="h-full rounded-full transition-all" style={{ width:`${pct}%`, background:color }}/>
+      </div>
+      <span className="text-xs font-semibold tabular-nums" style={{ color }}>{pct}%</span>
+    </div>
+  )
+}
+
+function FilterInput({ placeholder, icon, value, onChange }: { placeholder:string; icon:JSX.Element; value:string; onChange:(v:string)=>void }) {
+  const [focus,setFocus] = useState(false)
+  return (
+    <div className="flex items-center gap-2 rounded-lg px-3 py-2 transition-all duration-150"
+      style={{ border:`1.5px solid ${focus?'#2563eb':'#dde5f0'}`, background:focus?'#f8faff':'white', boxShadow:focus?'0 0 0 3px rgba(37,99,235,0.08)':'none', minWidth:0 }}>
+      <span style={{ color:'#94a3b8', flexShrink:0 }}>{icon}</span>
+      <input type="text" placeholder={placeholder} value={value} onChange={e=>onChange(e.target.value)}
+        onFocus={()=>setFocus(true)} onBlur={()=>setFocus(false)}
+        className="bg-transparent text-sm outline-none placeholder:text-slate-300 min-w-0 w-full" style={{ color:'#1e293b' }}/>
+    </div>
+  )
+}
+
+const PAGE_SIZE = 8
+
+function HistorialView() {
+  const [search, setSearch]     = useState('')
+  const [filterDate, setFilterDate] = useState('')
+  const [filterUser, setFilterUser] = useState('')
+  const [filterRes,  setFilterRes]  = useState('')
+  const [page, setPage]         = useState(1)
+  const [hoverRow, setHoverRow] = useState<number|null>(null)
+
+  const filtered = HISTORIAL_DATA.filter(r => {
+    const q = search.toLowerCase()
+    const matchQ = !q || r.error.toLowerCase().includes(q) || r.usuario.toLowerCase().includes(q) || r.consulta.toLowerCase().includes(q) || r.id.toLowerCase().includes(q)
+    const matchD = !filterDate || r.fecha.toLowerCase().includes(filterDate.toLowerCase())
+    const matchU = !filterUser || r.usuario.toLowerCase().includes(filterUser.toLowerCase()) || r.rol.toLowerCase().includes(filterUser.toLowerCase())
+    const matchR = !filterRes || r.resultado === filterRes
+    return matchQ && matchD && matchU && matchR
+  })
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
+  const currentPage = Math.min(page, totalPages)
+  const pageRows = filtered.slice((currentPage-1)*PAGE_SIZE, currentPage*PAGE_SIZE)
+
+  const handleFilter = (setter: (v:string)=>void) => (v:string) => { setter(v); setPage(1) }
+
+  const RESULT_OPTIONS: (StatusType|'')[] = ['','Resuelto','Escalado L2','En proceso','Pendiente']
+
+  return (
+    <div className="flex-1 overflow-y-auto px-7 py-6 flex flex-col gap-5">
+
+      {/* Filters row */}
+      <div className="bg-white rounded-xl px-5 py-4 flex items-center gap-3 flex-wrap"
+        style={{ border:'1px solid #e8eef6', boxShadow:'0 1px 3px rgba(15,32,68,0.04)' }}>
+        {/* Search */}
+        <div className="flex-1 min-w-48">
+          <FilterInput placeholder="Buscar por código, usuario, consulta…"
+            value={search} onChange={handleFilter(setSearch)}
+            icon={<svg width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="#94a3b8" strokeWidth="1.3"/><path d="M10.5 10.5l3 3" stroke="#94a3b8" strokeWidth="1.3" strokeLinecap="round"/></svg>}/>
+        </div>
+
+        <div className="w-px h-6" style={{ background:'#e2e8f4' }}/>
+
+        {/* Date filter */}
+        <div className="w-44">
+          <FilterInput placeholder="Filtrar por fecha…"
+            value={filterDate} onChange={handleFilter(setFilterDate)}
+            icon={<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1" y="2.5" width="12" height="10" rx="2" stroke="#94a3b8" strokeWidth="1.2"/><path d="M4.5 1v3M9.5 1v3M1 5.5h12" stroke="#94a3b8" strokeWidth="1.2" strokeLinecap="round"/></svg>}/>
+        </div>
+
+        {/* User filter */}
+        <div className="w-44">
+          <FilterInput placeholder="Filtrar por usuario…"
+            value={filterUser} onChange={handleFilter(setFilterUser)}
+            icon={<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="4.5" r="2.5" stroke="#94a3b8" strokeWidth="1.2"/><path d="M1.5 13C1.5 10.5 4 8.5 7 8.5s5.5 2 5.5 4.5" stroke="#94a3b8" strokeWidth="1.2" strokeLinecap="round"/></svg>}/>
+        </div>
+
+        {/* Status filter */}
+        <div className="w-44">
+          <div className="flex items-center gap-2 rounded-lg px-3 py-2"
+            style={{ border:'1.5px solid #dde5f0', background:'white' }}>
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5.5" stroke="#94a3b8" strokeWidth="1.2"/><path d="M4.5 7h5M5.5 5l2 2-2 2" stroke="#94a3b8" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+            <select value={filterRes} onChange={e=>{handleFilter(setFilterRes)(e.target.value)}}
+              className="bg-transparent text-sm outline-none w-full" style={{ color:filterRes?'#1e293b':'#94a3b8' }}>
+              {RESULT_OPTIONS.map(o => <option key={o} value={o}>{o || 'Todos los estados'}</option>)}
+            </select>
+          </div>
+        </div>
+
+        {/* Clear */}
+        {(search||filterDate||filterUser||filterRes) && (
+          <button type="button" onClick={()=>{setSearch('');setFilterDate('');setFilterUser('');setFilterRes('');setPage(1)}}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium hover:bg-slate-50 transition-colors"
+            style={{ border:'1px solid #e2e8f4', color:'#64748b' }}>
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 2l8 8M10 2l-8 8" stroke="#94a3b8" strokeWidth="1.4" strokeLinecap="round"/></svg>
+            Limpiar
+          </button>
+        )}
+
+        <div className="ml-auto flex items-center gap-2 text-xs" style={{ color:'#94a3b8' }}>
+          <span className="font-semibold tabular-nums" style={{ color:'#0f2044' }}>{filtered.length}</span> registros encontrados
+        </div>
+      </div>
+
+      {/* Table */}
+      <div className="bg-white rounded-xl overflow-hidden flex-1"
+        style={{ border:'1px solid #e8eef6', boxShadow:'0 1px 3px rgba(15,32,68,0.05)' }}>
+        <div className="overflow-x-auto">
+
+        {/* Column headers */}
+        <div className="grid px-5 py-3 min-w-[700px]"
+          style={{ gridTemplateColumns:'96px 56px 160px 1fr 130px 110px 110px', borderBottom:'1px solid #f1f5fb', background:'#fafbfd' }}>
+          {['ID','Hora','Usuario','Consulta / Error','Módulo','Coincidencia','Resultado'].map(h => (
+            <span key={h} className="text-xs font-semibold uppercase tracking-wider" style={{ color:'#94a3b8', letterSpacing:'0.06em' }}>{h}</span>
+          ))}
+        </div>
+
+        {pageRows.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-20 gap-3">
+            <svg width="40" height="40" viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="18" stroke="#dde5f0" strokeWidth="2"/><path d="M13 20h14M13 14h14M13 26h9" stroke="#dde5f0" strokeWidth="2" strokeLinecap="round"/></svg>
+            <p className="text-sm font-medium" style={{ color:'#94a3b8' }}>No se encontraron registros con los filtros aplicados.</p>
+            <button type="button" onClick={()=>{setSearch('');setFilterDate('');setFilterUser('');setFilterRes('');setPage(1)}}
+              className="text-xs font-semibold" style={{ color:'#2563eb' }}>Limpiar filtros</button>
+          </div>
+        ) : pageRows.map((row, i) => (
+          <div key={row.id}
+            className="grid px-5 py-3.5 items-center cursor-pointer transition-colors duration-100"
+            style={{ gridTemplateColumns:'96px 56px 160px 1fr 130px 110px 110px', borderBottom:i<pageRows.length-1?'1px solid #f1f5fb':'none', background:hoverRow===i?'#f8faff':'white', minWidth:'700px' }}
+            onMouseEnter={()=>setHoverRow(i)} onMouseLeave={()=>setHoverRow(null)}>
+
+            {/* ID */}
+            <span className="text-xs font-mono font-semibold" style={{ color:'#64748b' }}>{row.id}</span>
+
+            {/* Hora */}
+            <span className="text-xs" style={{ color:'#94a3b8' }}>{row.hora}</span>
+
+            {/* Usuario */}
+            <div>
+              <p className="text-sm font-medium leading-tight" style={{ color:'#1e293b' }}>{row.usuario}</p>
+              <p className="text-xs leading-tight" style={{ color:'#94a3b8' }}>{row.rol}</p>
+            </div>
+
+            {/* Consulta + error */}
+            <div className="pr-4 min-w-0">
+              <p className="text-sm leading-snug truncate" style={{ color:'#334155' }}>{row.consulta}</p>
+              <span className="text-xs font-mono font-semibold" style={{ color:'#3b5bdb' }}>{row.error}</span>
+            </div>
+
+            {/* Módulo */}
+            <span className="text-xs font-medium px-2 py-1 rounded-md inline-block" style={{ background:'#f1f5fb', color:'#475569' }}>{row.modulo}</span>
+
+            {/* Coincidencia */}
+            <CoincidenceBar pct={row.coincidencia}/>
+
+            {/* Resultado */}
+            <ResultadoPill s={row.resultado}/>
+          </div>
+        ))}
+        </div>{/* end overflow-x-auto */}
+      </div>
+
+      {/* Pagination */}
+      <div className="flex items-center justify-between flex-shrink-0">
+        <p className="text-xs" style={{ color:'#94a3b8' }}>
+          Mostrando{' '}
+          <span className="font-semibold" style={{ color:'#334155' }}>{(currentPage-1)*PAGE_SIZE+1}–{Math.min(currentPage*PAGE_SIZE, filtered.length)}</span>
+          {' '}de{' '}
+          <span className="font-semibold" style={{ color:'#334155' }}>{filtered.length}</span>
+          {' '}registros
+        </p>
+
+        <div className="flex items-center gap-1.5">
+          <button type="button" disabled={currentPage===1} onClick={()=>setPage(p=>p-1)}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium transition-all"
+            style={{ background:'white', border:'1.5px solid #e2e8f4', color:currentPage===1?'#cbd5e1':'#334155', cursor:currentPage===1?'not-allowed':'pointer' }}>
+            <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M8 3L5 6.5 8 10" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/></svg>
+            Anterior
+          </button>
+
+          <div className="flex items-center gap-1">
+            {Array.from({ length: totalPages }, (_,i) => i+1).map(n => (
+              <button key={n} type="button" onClick={()=>setPage(n)}
+                className="w-8 h-8 rounded-lg text-xs font-semibold transition-all"
+                style={{ background:n===currentPage?'linear-gradient(135deg,#1d4ed8,#2563eb)':'white', color:n===currentPage?'white':'#64748b', border:`1.5px solid ${n===currentPage?'transparent':'#e2e8f4'}`, boxShadow:n===currentPage?'0 2px 8px rgba(37,99,235,0.25)':'none' }}>
+                {n}
+              </button>
+            ))}
+          </div>
+
+          <button type="button" disabled={currentPage===totalPages} onClick={()=>setPage(p=>p+1)}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium transition-all"
+            style={{ background:'white', border:'1.5px solid #e2e8f4', color:currentPage===totalPages?'#cbd5e1':'#334155', cursor:currentPage===totalPages?'not-allowed':'pointer' }}>
+            Siguiente
+            <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M5 3l3 3.5-3 3.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/></svg>
+          </button>
+        </div>
+
+        <div className="flex items-center gap-2 text-xs" style={{ color:'#94a3b8' }}>
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 1.5v4M4 4l2.5 2.5L9 4" stroke="#94a3b8" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/><path d="M1 9.5v1A1.5 1.5 0 002.5 12h8A1.5 1.5 0 0012 10.5v-1" stroke="#94a3b8" strokeWidth="1.2" strokeLinecap="round"/></svg>
+          <button type="button" className="font-medium hover:underline" style={{ color:'#2563eb' }}>Exportar CSV</button>
+          <span>·</span>
+          <button type="button" className="font-medium hover:underline" style={{ color:'#2563eb' }}>Exportar PDF</button>
+        </div>
+      </div>
     </div>
   )
 }
@@ -881,6 +1461,290 @@ function BaseConocimientoView() {
   )
 }
 
+// ─── Administración de Usuarios ───────────────────────────────────────────────
+type UserRol = 'Administrador' | 'Soporte L2' | 'Soporte L1'
+type UserEstado = 'Activo' | 'Inactivo'
+
+type AdminUser = {
+  id: string; nombre: string; email: string; rol: UserRol;
+  estado: UserEstado; ultimaConexion: string; iniciales: string; color: string
+}
+
+const ADMIN_USERS: AdminUser[] = [
+  { id:'USR-001', nombre:'Jenny Morales',    email:'jennyMorales@miumg.edu.gt',  rol:'Administrador', estado:'Activo',   ultimaConexion:'Hoy, 14:32',       iniciales:'JM', color:'linear-gradient(135deg,#2563eb,#be185d)' },
+  { id:'USR-002', nombre:'Eduardo Alvear',   email:'e.alvear@corp.telco.gt',       rol:'Soporte L2',    estado:'Activo',   ultimaConexion:'Hoy, 13:15',       iniciales:'EA', color:'linear-gradient(135deg,#0891b2,#2563eb)'  },
+  { id:'USR-003', nombre:'Elena Gómez',      email:'e.gomez@corp.telco.gt',        rol:'Soporte L1',    estado:'Activo',   ultimaConexion:'Hoy, 11:47',       iniciales:'EG', color:'linear-gradient(135deg,#059669,#0891b2)'  },
+  { id:'USR-004', nombre:'Pedro Pascal',     email:'p.pascal@corp.telco.gt',       rol:'Soporte L2',    estado:'Activo',   ultimaConexion:'Hoy, 10:03',       iniciales:'PP', color:'linear-gradient(135deg,#7c3aed,#2563eb)'  },
+  { id:'USR-005', nombre:'Ana Herrera',      email:'a.herrera@corp.telco.gt',      rol:'Soporte L1',    estado:'Activo',   ultimaConexion:'Ayer, 17:22',      iniciales:'AH', color:'linear-gradient(135deg,#be185d,#7c3aed)'  },
+  { id:'USR-006', nombre:'Roberto Díaz',     email:'r.diaz@corp.telco.gt',         rol:'Soporte L2',    estado:'Inactivo', ultimaConexion:'15 ago, 09:41',    iniciales:'RD', color:'linear-gradient(135deg,#64748b,#94a3b8)'  },
+  { id:'USR-007', nombre:'Carmen López',     email:'c.lopez@corp.telco.gt',        rol:'Soporte L1',    estado:'Activo',   ultimaConexion:'Hoy, 08:55',       iniciales:'CL', color:'linear-gradient(135deg,#0891b2,#059669)'  },
+  { id:'USR-008', nombre:'Luis Martínez',    email:'l.martinez@corp.telco.gt',     rol:'Soporte L1',    estado:'Inactivo', ultimaConexion:'10 ago, 14:20',    iniciales:'LM', color:'linear-gradient(135deg,#64748b,#94a3b8)'  },
+]
+
+const ROL_STYLES: Record<UserRol,{bg:string;text:string}> = {
+  'Administrador': {bg:'#eff6ff',text:'#1d4ed8'},
+  'Soporte L2':    {bg:'#f5f3ff',text:'#6d28d9'},
+  'Soporte L1':    {bg:'#f0fdf4',text:'#166534'},
+}
+
+function AdminView() {
+  const [users, setUsers] = useState<AdminUser[]>(ADMIN_USERS)
+  const [search, setSearch] = useState('')
+  const [filterRol, setFilterRol] = useState('')
+  const [filterEstado, setFilterEstado] = useState('')
+  const [showModal, setShowModal] = useState(false)
+  const [hoverRow, setHoverRow] = useState<number|null>(null)
+  const [newUser, setNewUser] = useState({ nombre:'', email:'', rol:'Soporte L1' as UserRol })
+  const [saving, setSaving] = useState(false)
+  const [toast, setToast] = useState('')
+
+  const filtered = users.filter(u => {
+    const q = search.toLowerCase()
+    const mQ = !q || u.nombre.toLowerCase().includes(q) || u.email.toLowerCase().includes(q) || u.id.toLowerCase().includes(q)
+    const mR = !filterRol || u.rol === filterRol
+    const mE = !filterEstado || u.estado === filterEstado
+    return mQ && mR && mE
+  })
+
+  const toggleEstado = (id: string) => {
+    setUsers(us => us.map(u => u.id === id ? { ...u, estado: u.estado === 'Activo' ? 'Inactivo' : 'Activo' } : u))
+    setToast('Estado actualizado correctamente')
+    setTimeout(() => setToast(''), 2500)
+  }
+
+  const handleNew = (e: React.FormEvent) => {
+    e.preventDefault(); setSaving(true)
+    setTimeout(() => {
+      const initials = newUser.nombre.split(' ').map(n=>n[0]).join('').slice(0,2).toUpperCase()
+      setUsers(us => [{
+        id:`USR-00${us.length+1}`, nombre:newUser.nombre, email:newUser.email,
+        rol:newUser.rol, estado:'Activo', ultimaConexion:'Justo ahora',
+        iniciales:initials, color:'linear-gradient(135deg,#2563eb,#7c3aed)'
+      }, ...us])
+      setSaving(false); setShowModal(false)
+      setNewUser({ nombre:'', email:'', rol:'Soporte L1' })
+      setToast('Usuario creado correctamente')
+      setTimeout(() => setToast(''), 2500)
+    }, 900)
+  }
+
+  const ROL_OPTS: UserRol[] = ['Administrador','Soporte L2','Soporte L1']
+  const EST_OPTS: UserEstado[] = ['Activo','Inactivo']
+
+  return (
+    <div className="flex-1 overflow-y-auto px-4 md:px-7 py-6 flex flex-col gap-5">
+
+      {/* Toast */}
+      {toast && (
+        <div className="fixed top-6 right-6 z-50 flex items-center gap-3 px-5 py-3.5 rounded-xl shadow-xl"
+          style={{ background:'#ecfdf5', border:'1.5px solid #6ee7b7' }}>
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="8" fill="#059669"/><path d="M5.5 9.5l2.5 2.5 5-5" stroke="white" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/></svg>
+          <p className="text-sm font-semibold" style={{ color:'#065f46' }}>{toast}</p>
+        </div>
+      )}
+
+      {/* Modal */}
+      {showModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background:'rgba(15,32,68,0.45)' }}>
+          <div className="bg-white rounded-2xl w-full max-w-md overflow-hidden shadow-2xl">
+            <div className="flex items-center justify-between px-6 py-4" style={{ borderBottom:'1px solid #f1f5fb', background:'#fafbfd' }}>
+              <div>
+                <p className="text-sm font-bold" style={{ color:'#0f2044' }}>Nuevo usuario</p>
+                <p className="text-xs" style={{ color:'#94a3b8' }}>Complete los datos del nuevo colaborador</p>
+              </div>
+              <button type="button" onClick={() => setShowModal(false)} className="p-2 rounded-lg hover:bg-slate-100 transition-colors">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 3l10 10M13 3L3 13" stroke="#64748b" strokeWidth="1.5" strokeLinecap="round"/></svg>
+              </button>
+            </div>
+            <form onSubmit={handleNew} className="px-6 py-5 space-y-4">
+              <div>
+                <label className="block text-xs font-semibold uppercase mb-1.5" style={{ color:'#334155', letterSpacing:'0.06em' }}>Nombre completo <span className="text-pink-600">*</span></label>
+                <input required type="text" placeholder="Ej. María Fernández" value={newUser.nombre} onChange={e=>setNewUser(u=>({...u,nombre:e.target.value}))}
+                  className="w-full rounded-lg px-3.5 py-2.5 text-sm outline-none" style={{ border:'1.5px solid #dde5f0', background:'#fafbfd', color:'#1e293b' }}/>
+              </div>
+              <div>
+                <label className="block text-xs font-semibold uppercase mb-1.5" style={{ color:'#334155', letterSpacing:'0.06em' }}>Correo corporativo <span className="text-pink-600">*</span></label>
+                <input required type="email" placeholder="usuario@corp.telco.gt" value={newUser.email} onChange={e=>setNewUser(u=>({...u,email:e.target.value}))}
+                  className="w-full rounded-lg px-3.5 py-2.5 text-sm outline-none" style={{ border:'1.5px solid #dde5f0', background:'#fafbfd', color:'#1e293b' }}/>
+              </div>
+              <div>
+                <label className="block text-xs font-semibold uppercase mb-1.5" style={{ color:'#334155', letterSpacing:'0.06em' }}>Rol asignado <span className="text-pink-600">*</span></label>
+                <select value={newUser.rol} onChange={e=>setNewUser(u=>({...u,rol:e.target.value as UserRol}))}
+                  className="w-full rounded-lg px-3.5 py-2.5 text-sm outline-none appearance-none" style={{ border:'1.5px solid #dde5f0', background:'#fafbfd', color:'#1e293b' }}>
+                  {ROL_OPTS.map(r => <option key={r}>{r}</option>)}
+                </select>
+              </div>
+              <div className="flex items-center gap-3 pt-2">
+                <button type="button" onClick={()=>setShowModal(false)} className="flex-1 py-2.5 rounded-lg text-sm font-semibold" style={{ border:'1.5px solid #e2e8f4', color:'#64748b' }}>
+                  Cancelar
+                </button>
+                <button type="submit" disabled={saving} className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-semibold text-white"
+                  style={{ background:'linear-gradient(135deg,#0f2044,#2563eb)', boxShadow:'0 3px 12px rgba(37,99,235,0.3)' }}>
+                  {saving ? (
+                    <svg className="animate-spin" width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5.5" stroke="rgba(255,255,255,0.35)" strokeWidth="1.4"/><path d="M7 1.5A5.5 5.5 0 0112.5 7" stroke="white" strokeWidth="1.4" strokeLinecap="round"/></svg>
+                  ) : (
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7l3.5 3.5L12 3" stroke="white" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                  )}
+                  {saving ? 'Guardando…' : 'Crear usuario'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Header */}
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h2 className="text-base font-bold" style={{ color:'#0f2044' }}>Control de Accesos y Roles</h2>
+          <p className="text-xs mt-0.5" style={{ color:'#94a3b8' }}>{users.filter(u=>u.estado==='Activo').length} usuarios activos · {users.length} total registrados</p>
+        </div>
+        <button type="button" onClick={()=>setShowModal(true)}
+          className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold text-white active:scale-95 transition-all"
+          style={{ background:'linear-gradient(135deg,#0f2044,#2563eb)', boxShadow:'0 3px 12px rgba(37,99,235,0.3)' }}>
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v12M1 7h12" stroke="white" strokeWidth="1.8" strokeLinecap="round"/></svg>
+          Nuevo usuario
+        </button>
+      </div>
+
+      {/* Summary cards */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {[
+          { label:'Total usuarios', val: users.length.toString(), icon:'👥', color:'#2563eb' },
+          { label:'Activos', val: users.filter(u=>u.estado==='Activo').length.toString(), icon:'✅', color:'#059669' },
+          { label:'Inactivos', val: users.filter(u=>u.estado==='Inactivo').length.toString(), icon:'⛔', color:'#be185d' },
+          { label:'Administradores', val: users.filter(u=>u.rol==='Administrador').length.toString(), icon:'🔐', color:'#7c3aed' },
+        ].map((c,i) => (
+          <div key={i} className="bg-white rounded-xl px-4 py-4 flex items-center gap-3" style={{ border:'1px solid #e8eef6', boxShadow:'0 1px 3px rgba(15,32,68,0.04)' }}>
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center text-lg" style={{ background:`${c.color}12` }}>{c.icon}</div>
+            <div>
+              <p className="text-2xl font-bold" style={{ color:'#0f2044' }}>{c.val}</p>
+              <p className="text-xs" style={{ color:'#94a3b8' }}>{c.label}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Filters */}
+      <div className="bg-white rounded-xl px-4 py-3 flex flex-wrap items-center gap-3" style={{ border:'1px solid #e8eef6', boxShadow:'0 1px 3px rgba(15,32,68,0.04)' }}>
+        <div className="flex items-center gap-2 rounded-lg px-3 py-2 flex-1 min-w-40" style={{ border:'1.5px solid #dde5f0', background:'#fafbfd' }}>
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="4.5" stroke="#94a3b8" strokeWidth="1.2"/><path d="M9.5 9.5l3 3" stroke="#94a3b8" strokeWidth="1.2" strokeLinecap="round"/></svg>
+          <input type="text" placeholder="Buscar nombre, email, ID…" value={search} onChange={e=>setSearch(e.target.value)}
+            className="bg-transparent text-sm outline-none w-full placeholder:text-slate-300" style={{ color:'#1e293b' }}/>
+        </div>
+        <div className="flex items-center gap-2 rounded-lg px-3 py-2" style={{ border:'1.5px solid #dde5f0', background:'#fafbfd' }}>
+          <select value={filterRol} onChange={e=>setFilterRol(e.target.value)} className="bg-transparent text-sm outline-none" style={{ color: filterRol?'#1e293b':'#94a3b8' }}>
+            <option value="">Todos los roles</option>
+            {ROL_OPTS.map(r => <option key={r}>{r}</option>)}
+          </select>
+        </div>
+        <div className="flex items-center gap-2 rounded-lg px-3 py-2" style={{ border:'1.5px solid #dde5f0', background:'#fafbfd' }}>
+          <select value={filterEstado} onChange={e=>setFilterEstado(e.target.value)} className="bg-transparent text-sm outline-none" style={{ color: filterEstado?'#1e293b':'#94a3b8' }}>
+            <option value="">Todos los estados</option>
+            {EST_OPTS.map(s => <option key={s}>{s}</option>)}
+          </select>
+        </div>
+        {(search||filterRol||filterEstado) && (
+          <button type="button" onClick={()=>{setSearch('');setFilterRol('');setFilterEstado('')}}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium" style={{ border:'1px solid #e2e8f4', color:'#64748b' }}>
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 2l8 8M10 2l-8 8" stroke="#94a3b8" strokeWidth="1.4" strokeLinecap="round"/></svg>
+            Limpiar
+          </button>
+        )}
+        <span className="ml-auto text-xs" style={{ color:'#94a3b8' }}>
+          <span className="font-semibold" style={{ color:'#334155' }}>{filtered.length}</span> de {users.length} usuarios
+        </span>
+      </div>
+
+      {/* Table */}
+      <div className="bg-white rounded-xl overflow-hidden" style={{ border:'1px solid #e8eef6', boxShadow:'0 1px 3px rgba(15,32,68,0.05)' }}>
+        {/* Desktop column headers */}
+        <div className="hidden md:grid px-6 py-3" style={{ gridTemplateColumns:'200px 1fr 140px 90px 160px 120px', borderBottom:'1px solid #f1f5fb', background:'#fafbfd' }}>
+          {['Nombre','Email','Rol','Estado','Última conexión','Acciones'].map(h => (
+            <span key={h} className="text-xs font-semibold uppercase tracking-wider" style={{ color:'#94a3b8', letterSpacing:'0.06em' }}>{h}</span>
+          ))}
+        </div>
+
+        {filtered.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-16 gap-3">
+            <svg width="40" height="40" viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="18" stroke="#dde5f0" strokeWidth="2"/><circle cx="20" cy="15" r="5" stroke="#dde5f0" strokeWidth="2"/><path d="M8 34c0-6.627 5.373-12 12-12s12 5.373 12 12" stroke="#dde5f0" strokeWidth="2" strokeLinecap="round"/></svg>
+            <p className="text-sm font-medium" style={{ color:'#94a3b8' }}>No se encontraron usuarios con los filtros aplicados.</p>
+          </div>
+        ) : filtered.map((u, i) => (
+          <div key={u.id} onMouseEnter={()=>setHoverRow(i)} onMouseLeave={()=>setHoverRow(null)}
+            className="transition-colors duration-100"
+            style={{ borderBottom:i<filtered.length-1?'1px solid #f1f5fb':'none', background:hoverRow===i?'#f8faff':'white' }}>
+
+            {/* Desktop row */}
+            <div className="hidden md:grid px-6 py-3.5 items-center"
+              style={{ gridTemplateColumns:'200px 1fr 140px 90px 160px 120px' }}>
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white flex-shrink-0" style={{ background: u.color }}>{u.iniciales}</div>
+                <div>
+                  <p className="text-sm font-semibold leading-tight" style={{ color:'#0f2044' }}>{u.nombre}</p>
+                  <p className="text-xs leading-tight" style={{ color:'#94a3b8' }}>{u.id}</p>
+                </div>
+              </div>
+              <span className="text-sm truncate pr-4" style={{ color:'#64748b' }}>{u.email}</span>
+              <span className="text-xs font-semibold px-2.5 py-1 rounded-full inline-block" style={{ background:ROL_STYLES[u.rol].bg, color:ROL_STYLES[u.rol].text }}>{u.rol}</span>
+              <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full"
+                style={{ background:u.estado==='Activo'?'#ecfdf5':'#f9fafb', color:u.estado==='Activo'?'#065f46':'#64748b' }}>
+                <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background:u.estado==='Activo'?'#10b981':'#cbd5e1' }}/>
+                {u.estado}
+              </span>
+              <span className="text-sm" style={{ color:'#64748b' }}>{u.ultimaConexion}</span>
+              <div className="flex items-center gap-2">
+                <button type="button" className="text-xs font-semibold px-2.5 py-1.5 rounded-lg hover:bg-blue-50 transition-colors" style={{ color:'#2563eb', border:'1px solid #dde5f7' }}>
+                  Editar
+                </button>
+                <button type="button" onClick={()=>toggleEstado(u.id)}
+                  className="text-xs font-semibold px-2.5 py-1.5 rounded-lg transition-colors"
+                  style={{ color: u.estado==='Activo'?'#be185d':'#059669', border:`1px solid ${u.estado==='Activo'?'#fce7f3':'#d1fae5'}`, background: u.estado==='Activo'?'#fdf2f8':'#f0fdf4' }}>
+                  {u.estado==='Activo' ? 'Desactivar' : 'Activar'}
+                </button>
+              </div>
+            </div>
+
+            {/* Mobile card row */}
+            <div className="md:hidden px-4 py-4 space-y-2">
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold text-white flex-shrink-0" style={{ background: u.color }}>{u.iniciales}</div>
+                  <div>
+                    <p className="text-sm font-semibold" style={{ color:'#0f2044' }}>{u.nombre}</p>
+                    <p className="text-xs" style={{ color:'#94a3b8' }}>{u.email}</p>
+                  </div>
+                </div>
+                <span className="inline-flex items-center gap-1 text-xs font-semibold px-2 py-1 rounded-full flex-shrink-0"
+                  style={{ background:u.estado==='Activo'?'#ecfdf5':'#f9fafb', color:u.estado==='Activo'?'#065f46':'#64748b' }}>
+                  <span className="w-1.5 h-1.5 rounded-full" style={{ background:u.estado==='Activo'?'#10b981':'#cbd5e1' }}/>
+                  {u.estado}
+                </span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-semibold px-2 py-1 rounded-full" style={{ background:ROL_STYLES[u.rol].bg, color:ROL_STYLES[u.rol].text }}>{u.rol}</span>
+                <div className="flex items-center gap-2">
+                  <button type="button" className="text-xs font-semibold px-2.5 py-1.5 rounded-lg" style={{ color:'#2563eb', border:'1px solid #dde5f7' }}>Editar</button>
+                  <button type="button" onClick={()=>toggleEstado(u.id)}
+                    className="text-xs font-semibold px-2.5 py-1.5 rounded-lg"
+                    style={{ color:u.estado==='Activo'?'#be185d':'#059669', border:`1px solid ${u.estado==='Activo'?'#fce7f3':'#d1fae5'}`, background:u.estado==='Activo'?'#fdf2f8':'#f0fdf4' }}>
+                    {u.estado==='Activo' ? 'Desactivar' : 'Activar'}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+
+        <div className="px-6 py-3.5 flex items-center justify-between" style={{ background:'#fafbfd', borderTop:'1px solid #f1f5fb' }}>
+          <span className="text-xs" style={{ color:'#94a3b8' }}>Sesiones auditadas · Acceso administrado por Dirección TI</span>
+          <button type="button" className="text-xs font-medium hover:underline" style={{ color:'#2563eb' }}>Exportar listado</button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 // ─── Placeholder for other views ──────────────────────────────────────────────
 function PlaceholderView({ title }: { title: string }) {
   return (
@@ -899,6 +1763,7 @@ function PlaceholderView({ title }: { title: string }) {
 // ─── App shell ────────────────────────────────────────────────────────────────
 function AppShell({ onLogout }: { onLogout: () => void }) {
   const [nav, setNav] = useState<NavId>('dashboard')
+  const [sidebarOpen, setSidebarOpen] = useState(false)
 
   const PAGE_META: Record<NavId,{title:string;subtitle:string}> = {
     dashboard: { title:'Panel de Control General', subtitle:'Lunes, 18 de agosto de 2026 · Turno matutino' },
@@ -913,13 +1778,26 @@ function AppShell({ onLogout }: { onLogout: () => void }) {
 
   return (
     <div className="flex h-screen w-full overflow-hidden" style={{ background:'#f1f5fb', fontFamily:"'Inter',system-ui,sans-serif" }}>
-      <Sidebar active={nav} onChange={setNav} onLogout={onLogout}/>
+
+      {/* Mobile overlay */}
+      {sidebarOpen && (
+        <div className="fixed inset-0 z-40 bg-black/50 md:hidden" onClick={() => setSidebarOpen(false)}/>
+      )}
+
+      {/* Sidebar — fixed on mobile, static on desktop */}
+      <div className={`fixed md:static inset-y-0 left-0 z-50 flex-shrink-0 transition-transform duration-300 md:translate-x-0 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`} style={{ width:'224px' }}>
+        <Sidebar active={nav} onChange={setNav} onLogout={onLogout} onClose={() => setSidebarOpen(false)}/>
+      </div>
+
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        <TopBar title={title} subtitle={subtitle}/>
+        <TopBar title={title} subtitle={subtitle} onMenuClick={() => setSidebarOpen(true)}/>
         {nav === 'dashboard' && <DashboardView/>}
         {nav === 'agente'    && <AgentView/>}
         {nav === 'base'      && <BaseConocimientoView/>}
-        {nav !== 'dashboard' && nav !== 'agente' && nav !== 'base' && <PlaceholderView title={title}/>}
+        {nav === 'historial' && <HistorialView/>}
+        {nav === 'metricas'  && <MetricasView/>}
+        {nav === 'admin'     && <AdminView/>}
+        {nav !== 'dashboard' && nav !== 'agente' && nav !== 'base' && nav !== 'historial' && nav !== 'metricas' && nav !== 'admin' && <PlaceholderView title={title}/>}
       </div>
     </div>
   )
